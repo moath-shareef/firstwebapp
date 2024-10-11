@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  AZURE_WEBAPP_NAME: firstWebApp    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_NAME: firstwebapp    # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: './firstwebapp'  # set this to your project name
   DOTNET_VERSION: '8.0.x'             # set this to the .NET Core version to use
 
 jobs:
@@ -21,11 +21,16 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: List directory contents
+      run: ls -R
+
     - name: Build with dotnet
       run: dotnet build --configuration Release
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
     - name: dotnet publish
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
